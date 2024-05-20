@@ -76,11 +76,8 @@ t_list *ft_special_split(char *line)
             }
             if (!line[i] && k == 1)
                 return (NULL);
-            temp->content = (void *) ft_cımbız(&line[j], &line[i-1]);
+            ft_lstadd_back(&head, ft_lstnew((void *)ft_cımbız(&line[j], &line[i-1])));
             i += k;
-            printf("-%s\n", (char *)temp->content);
-            temp->next = NULL;
-            ft_lstadd_back(&head, temp);
         }
     }
     return (head);
@@ -105,25 +102,29 @@ t_list *ft_lexer(t_list *splitted)
     head = NULL;
     while (splitted)
     {
-        if (strcmp((char *)splitted->content, "<"))
+        if (!strncmp((char *)splitted->content, "<",1))
         {
+            write(1,"a", 1);
             ft_lstadd_back(&head, ft_set_splitted(LESS, NULL));
             splitted = splitted->next;
             ft_lstadd_back(&head, ft_set_splitted(INFILE, splitted->content));
         }
-        else if (strcmp((char *)splitted->content, ">"))
+        else if (!strncmp((char *)splitted->content, ">", 1))
         {
+            write(1,"b", 1);
             ft_lstadd_back(&head, ft_set_splitted(GREAT, NULL));
             splitted = splitted->next;
             ft_lstadd_back(&head, ft_set_splitted(OUTFILE, splitted->content));
         }
-        else if (strcmp((char *)splitted->content, "|"))
+        else if (!strncmp((char *)splitted->content, "|", 1))
         {
+            write(1,"c", 1);
             ft_lstadd_back(&head, ft_set_splitted(PIPE, NULL));
             i = 1;
         }
         else
         {
+            write(1,"d", 1);
             if (i  && i--)
                 ft_lstadd_back(&head, ft_set_splitted(CMD, splitted->content));
             else
@@ -138,14 +139,21 @@ int main(int argc, char const *argv[])
 {
     char *line = "asd >< ak a<|a '  a  ' b 'ga\"ay'  >> \"n\"\n\\ a<<g  etf asdf <";
     t_list *lst = ft_special_split(line);
+    t_list *splitted = ft_lexer(lst);
     //printf("%d\n", in_charset(' ', " "));
     //char *deneme = ft_cımbız(line, line+6);
    // printf("%s\n", deneme);
     int i = 0;
-    while (lst)
+    // while (lst)
+    // {
+    //     printf("%s\n", (char *)lst->content);
+    //      lst = lst->next;
+    // }
+    
+    while (splitted)
     {
-        printf("%s\n", (char *)lst->content);
-        lst = lst->next;
+        printf("%s\t->%d\n", ((t_token *)splitted->content)->value, ((t_token *)splitted->content)->term);
+        splitted = splitted->next;
     }
     return 0;
 }
