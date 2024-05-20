@@ -104,27 +104,27 @@ t_list *ft_lexer(t_list *splitted)
     {
         if (!strncmp((char *)splitted->content, "<",1))
         {
-            write(1,"a", 1);
+            write(1, splitted->content, strlen((char *) splitted->content));
             ft_lstadd_back(&head, ft_set_splitted(LESS, NULL));
             splitted = splitted->next;
             ft_lstadd_back(&head, ft_set_splitted(INFILE, splitted->content));
         }
         else if (!strncmp((char *)splitted->content, ">", 1))
         {
-            write(1,"b", 1);
+            write(1, splitted->content, strlen((char *) splitted->content));
             ft_lstadd_back(&head, ft_set_splitted(GREAT, NULL));
             splitted = splitted->next;
             ft_lstadd_back(&head, ft_set_splitted(OUTFILE, splitted->content));
         }
         else if (!strncmp((char *)splitted->content, "|", 1))
         {
-            write(1,"c", 1);
+            write(1, splitted->content, strlen((char *) splitted->content));
             ft_lstadd_back(&head, ft_set_splitted(PIPE, NULL));
             i = 1;
         }
         else
         {
-            write(1,"d", 1);
+            write(1, splitted->content, strlen((char *) splitted->content));
             if (i  && i--)
                 ft_lstadd_back(&head, ft_set_splitted(CMD, splitted->content));
             else
@@ -133,11 +133,12 @@ t_list *ft_lexer(t_list *splitted)
         if (splitted)
             splitted = splitted->next;
     }
+    return (head);
 }
 
 int main(int argc, char const *argv[])
 {
-    char *line = "asd >< ak a<|a '  a  ' b 'ga\"ay'  >> \"n\"\n\\ a<<g  etf asdf <";
+    char *line = "asd > ak a<a '  a  ' b 'ga\"ay'  >> \"n\"\n\\ a<<g  etf asdf ";
     t_list *lst = ft_special_split(line);
     t_list *splitted = ft_lexer(lst);
     //printf("%d\n", in_charset(' ', " "));
