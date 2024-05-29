@@ -1,0 +1,10 @@
+token struct
+type, INFILE OUTFILE PARAM CMD HERE_DOC APP PIPE GREAT LESS DGREAT DLESS
+		<		>				<<		>>	|		>	<	>>     <<
+value
+
+alınan satırı kocaman bir liste halinegetir
+
+yaptığın listeyi pipelardan böl -> parça
+
+her parça için infile ve outfilealrı bir lsiteye kaydet
