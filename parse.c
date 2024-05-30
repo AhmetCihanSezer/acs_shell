@@ -24,6 +24,8 @@ int startswith(char *str1, char *str2) {
     return (1);
   return (0);
 }
+
+
 int endswith(char *str1, char *str2) {
   int i;
   int length;

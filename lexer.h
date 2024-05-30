@@ -15,6 +15,8 @@ typedef struct s_token
     int term;
 } t_token;
 
+char *tweezers(char *head, char *tail);
+
 #define LESS 1
 #define GREAT 2
 #define DLESS 3

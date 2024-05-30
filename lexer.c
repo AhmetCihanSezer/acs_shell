@@ -1,11 +1,14 @@
 #include "lexer.h"
 
-char *ft_cımbız(char *head, char *tail)
+char *tweezers(char *head, char *tail)
 {
     char *str;
     int i;
-
-    str = (char *) malloc(sizeof(char) * (tail - head));
+    if (!tail)
+        return (ft_strdup(head));
+    if (!head)
+        return (NULL);
+    str = (char *) malloc(sizeof(char) * (tail - head + 1));
     i = 0;
     while (head != tail)
     {
@@ -13,8 +16,7 @@ char *ft_cımbız(char *head, char *tail)
         head++;
         i++;
     }
-    str[i] = *tail;
-    str[i+1] = '\0';
+    str[i] = '\0';
     return str;
 }
 
@@ -76,7 +78,7 @@ t_list *ft_special_split(char *line)
             }
             if (!line[i] && k == 1)
                 return (NULL);
-            ft_lstadd_back(&head, ft_lstnew((void *)ft_cımbız(&line[j], &line[i-1])));
+            ft_lstadd_back(&head, ft_lstnew((void *)ft_z(&line[j], &line[i-1])));
             i += k;
         }
     }

@@ -1,162 +1,69 @@
 #include "enviroment.h"
 
-int	n_strcmp(const char *s1, const char *s2)
+char *tweezers(char *head, char *tail)
 {
-	while (*s1 != '=' && *s2 != '=')
-	{
-		if (*s1 != *s2)
-			break ;
-		s1++;
-		s2++;
-	}
-	return (*s1 - *s2);
-}
-
-size_t	ft_strlen(const char *s)
-{
-	int	i;
-
-	i = 0;
-	while (s[i] != 0)
-		i++;
-	return (i);
-}
-
-char	*ft_strdup(const char *s1)
-{
-	char	*str;
-	int		len;
-	int		i;
-
-	len = ft_strlen(s1);
-	str = (char *) malloc(sizeof(char) * (len + 1));
-	if (!str)
-		return (NULL);
-	i = 0;
-	while (i < len)
-	{
-		str[i] = s1[i];
-		i++;
-	}
-	str[i] = 0;
-	return (str);
-}
-
-t_list	*ft_lstlast(t_list *lst)
-{
-	if (!lst)
-		return (lst);
-	while (lst->next)
-		lst = lst->next;
-	return (lst);
-}
-
-void	ft_lstadd_back(t_list **lst, t_list *new)
-{
-	t_list	*temp;
-	t_list	*last;
-
-	if (!*lst)
-	{
-		*lst = new;
-	}
-	else
-	{
-		temp = *lst;
-		last = ft_lstlast(temp);
-		last->next = new;
-	}
-}
-
-t_list	*ft_lstnew(void *content)
-{
-	t_list	*new;
-
-	new = (t_list *) malloc(sizeof(t_list));
-	if (!new)
-		return (NULL);
-	new->content = content;
-	new->next = NULL;
-	return (new);
-}
-
-void	ft_lstdelone(t_list *lst, void (*del)(void*))
-{
-	del(lst->content);
-	free(lst);
-}
-
-char **ft_split_equ(char *env)
-{
-	int i;
-	int j;
-	char **splited;
-	char *temp;
-
-	splited = (char **)malloc(2 * sizeof(char *));
-	i = 0;
-	while(env[i] != '=' && env[i])
-		i++;
-	temp = (char *) malloc(sizeof(char) * i);
-	i = 0;
-	while (env[i] != '=' && env[i])
-	{
-		temp[i] = env[i];
-		i++;
-	}
-	temp[i] = '\0';
-	splited[0] = temp;
-	splited[1] = NULL;
-	if (env[i])
-	{
-		j = 0;
-		while (env[j + i + 1])
-			j++;
-		temp = (char *) malloc(sizeof(char) * j);
-		j = 0;
-		while (env[j + i + 1])
-		{
-			temp[j] = env[i + 1 + j];
-			j++;
-		}
-		temp[j] = '\0';
-		splited[1] = temp;
-	}
-	return (splited);
-}
-
-t_list *ft_set_env(char **env)
-{
-    t_list *new_env;
-    t_list *temp;
-	t_data *data;
-	char **splited;
+    char *str;
     int i;
-
-    if (!env)
+    if (!tail)
+        return (ft_strdup(head));
+    if (!head)
         return (NULL);
-    new_env = (t_list *) malloc(sizeof(t_list));
-	data = (t_data *) malloc(sizeof(t_data));
-	splited = ft_split_equ(env[0]);
-	data->title = splited[0];
-	data->var = splited[1];
-    new_env->content = (void *) data;
-    new_env->next = NULL;
-    i = 1;
-    while (env[i])
+    str = (char *) malloc(sizeof(char) * (tail - head + 1));
+    i = 0;
+    while (head != tail)
     {
-        temp = (t_list *)malloc(sizeof(t_list));
-		data = (t_data *) malloc(sizeof(t_data));
-		splited = ft_split_equ(env[i]);
-		data->title = splited[0];
-		data->var = splited[1];
-        temp->content = (void *) data;
-        temp->next = NULL;
-        ft_lstadd_back(&new_env, temp);
+        str[i] = *head;
+        head++;
         i++;
     }
-    return (new_env);
+    str[i] = '\0';
+    return str;
 }
+
+t_data *set_data(char *env)
+{
+	t_data	*data;
+	char	*loc;
+
+	data = (t_data *) malloc(sizeof(t_data));
+	if (!data)
+		return (NULL);
+	loc = ft_strchr(env, '=');
+	data->name = ft_strdup(tweezers(env, loc));
+	if (loc)
+		data->value = ft_strdup(loc + 1);
+	else
+		data->value = NULL;
+	return data;
+}
+
+t_list *set_env(char **envp)
+{
+	t_list	*head;
+	int	i;
+	int	len;
+
+	head = NULL;
+	i = 0;
+	while (envp[i])
+	{
+		ft_lstadd_back(&head, ft_lstnew((void *) set_data(envp[i])));
+		i++;
+	}
+	return (head);
+}
+
+// int main(int argc, char const *argv[], char **env)
+// {
+// 	t_list *head = set_env(env);
+// 	while (head)
+// 	{
+// 		printf("%s = %s \n", ((t_data *)head->content)->name,((t_data *)head->content)->value);
+// 		head = head->next;
+// 	}
+
+// 	return 0;
+// }
 
 t_list *ft_sort_env(t_list *env)
 {
@@ -166,8 +73,7 @@ t_list *ft_sort_env(t_list *env)
 	tmp = env;
 	while(env->next != NULL)
 	{
-
-		if (strcmp(((t_data *)env->content)->title, ((t_data *)(env->next->content))->title) > 0)
+		if (strcmp(((t_data *)env->content)->name, ((t_data *)(env->next->content))->value) > 0)
 		{
 			swap = env->content;
 			env->content = env->next->content;
@@ -193,29 +99,3 @@ t_list *ft_cpylst(t_list *lst)
 	}
 	return (head);
 }
-
-// int main(int argc, char const *argv[], char **env)
-// {
-// 	char ** asd = ft_split_equ("asd=dfr");
-// 	printf("%s -=- %s", asd[0], asd[1]);
-//     t_list *head = ft_set_env(env);
-// 	while (head)
-// 	{
-// 		printf("%s -=- %s\n", ((t_data *) head->content)->title, ((t_data *)head->content)->var);
-// 		head = head->next;
-// 	}
-// 	t_list *cpy = ft_cpylst(head);
-// 	t_list *sorted = ft_sort_env(head);
-//     while (sorted)
-//     {
-// 		printf("%s -=- %s\n", ((t_data *) sorted->content)->title, ((t_data *)sorted->content)->var);
-//         sorted = sorted->next;
-//     }
-// 	printf("----------------\n");
-// 	while (cpy)
-//     {
-//         printf("%s\n", (char *) cpy->content);
-//         cpy = cpy->next;
-//     }
-//     return 0;
-// }

@@ -3,6 +3,10 @@
         "fcntl.h": "c",
         "builtin.h": "c",
         "unistd.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "libft.h": "c",
+        "lexer.h": "c",
+        "execute.h": "c",
+        "enviroment.h": "c"
     }
 }

@@ -1,6 +1,6 @@
 #include "builtin.h"
 
-int ft_env(t_list *env)
+int env(t_list *env)
 {
     int i;
 
@@ -9,7 +9,7 @@ int ft_env(t_list *env)
     i = 0;
     while (env)
     {
-        printf("%s\n", (char *) env->content);
+        printf("%s = %s \n", ((t_data *)env->content)->name,((t_data *)env->content)->value);
         env = env->next;
     }
     return (1);

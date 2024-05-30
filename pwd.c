@@ -1,6 +1,6 @@
 #include "builtin.h"
 
-char *ft_pwd(void)
+char *pwd(void)
 {
     char *buf;
 
@@ -8,7 +8,7 @@ char *ft_pwd(void)
     if (!getcwd(buf, 260))
     {
         free(buf);
-        perror("cd: ");
+        perror("pwd: ");
         return (NULL);
     }
     return (buf);

@@ -2,12 +2,13 @@
 
 void ft_del_content(void *content)
 {
-    free(((t_data *)content)->title);
-    free(((t_data *)content)->var);
+    free(((t_data *)content)->name);
+    free(((t_data *)content)->value);
 }
 
-void ft_unset(t_list *env, char *arg)
+void ft_unset(char **arg, t_minishell *minishell)
 {
+    
     if (!arg)
         return ;
     while (env)
