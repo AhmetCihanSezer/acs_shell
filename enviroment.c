@@ -1,4 +1,4 @@
-#include "enviroment.h"
+#include "minishell.h"
 
 char *tweezers(char *head, char *tail)
 {

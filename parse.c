@@ -1,6 +1,4 @@
-#include "enviroment.h"
-#include <stdio.h>
-#include <unistd.h>
+#include "minishell.h"
 
 typedef struct s_token {
     char *command;

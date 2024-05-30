@@ -1,6 +1,6 @@
-#include "builtin.h"
+#include "minishell.h"
 
-char *pwd(void)
+char *take_pwd(void)
 {
     char *buf;
 
@@ -12,4 +12,13 @@ char *pwd(void)
         return (NULL);
     }
     return (buf);
+}
+
+void pwd()
+{
+    char	*path;
+
+	path = take_pwd;
+	printf("%s\n", path);
+	free(path);
 }

@@ -1,4 +1,4 @@
-#include "builtin.h"
+#include "minishell.h"
 
 void	free_darr(char **arr)
 {
@@ -13,11 +13,11 @@ void	free_darr(char **arr)
 	free(arr);
 }
 
-void    del_data(t_data* data)
+void del_data(void *content)
 {
-    free(data->name);
-    free(data->value);
-    free(data);
+    free(((t_data *)content)->name);
+    free(((t_data *)content)->value);
+    free(content);
 }
 
 void built_in_exit(t_minishell *minishell)

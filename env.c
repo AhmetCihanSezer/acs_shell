@@ -1,4 +1,4 @@
-#include "builtin.h"
+#include "minishell.h"
 
 int env(t_list *env)
 {
@@ -9,7 +9,7 @@ int env(t_list *env)
     i = 0;
     while (env)
     {
-        printf("%s = %s \n", ((t_data *)env->content)->name,((t_data *)env->content)->value);
+        printf("%s=%s\n", ((t_data *)env->content)->name,((t_data *)env->content)->value);
         env = env->next;
     }
     return (1);

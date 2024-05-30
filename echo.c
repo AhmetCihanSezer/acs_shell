@@ -1,4 +1,4 @@
-#include "builtin.h"
+#include "minishell.h"
 
 static int  is_allsame(char *str, char c)
 {
@@ -19,24 +19,33 @@ static int  is_allsame(char *str, char c)
 int echo(char **arg)
 {
     int i;
-    int lock;
+    int lock1;
 
-    lock = 0;
+    lock1 = 0;
     i = 0;
     while (arg[i] && arg[i + 1])
     {
         if (arg[i][0] == '-' && is_allsame(&arg[i][1], 'n'))
-            lock = 1;
+            lock1 = 1;
         else
+        {
             printf("%s ", arg[i]);
+        }
         i++;
     }
     if (arg[i])
         if (arg[i][0] == '-' && is_allsame(&arg[i][1], 'n'))
-            lock = 1;
+            lock1 = 1;
         else
             printf("%s", arg[i]);
-    if (!lock)
+    if (!lock1)
         printf("\n");
     return 1;
 }
+
+int main(int argc, char const *argv[])
+{
+    echo((char **)&argv[1]);
+    return 0;
+}
+
