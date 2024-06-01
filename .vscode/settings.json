@@ -7,6 +7,19 @@
         "libft.h": "c",
         "lexer.h": "c",
         "execute.h": "c",
-        "enviroment.h": "c"
+        "enviroment.h": "c",
+        "array": "c",
+        "*.tcc": "c",
+        "concepts": "c",
+        "string": "c",
+        "unordered_map": "c",
+        "memory": "c",
+        "optional": "c",
+        "string_view": "c",
+        "ostream": "c",
+        "streambuf": "c",
+        "functional": "c",
+        "tuple": "c",
+        "minishell.h": "c"
     }
 }

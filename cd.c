@@ -1,63 +1,77 @@
 #include "minishell.h"
 
+static void	check_arg_num(char **arg)
+{
+	int	i;
+
+	i = 0;
+	while (arg[i])
+		i++;
+	if (i > 2)
+	{
+		write(2, "cd: too many arguments\n", 24);
+		exit (1);
+	}
+}
+
 static void set_pwd(t_list *head)
 {
-    while (head)
-    {
-        if (!ft_strncmp("PWD", ((t_data *)head->content)->name, 3))
-            {
-                free(((t_data *)head->content)->value);
-                ((t_data *)head->content)->value = ft_strdup(pwd());
-                break ;
-            }
-        head = head->next;
-    }
+	while (head)
+	{
+		if (!ft_strncmp("PWD", ((t_env *)head->content)->name, 3))
+			{
+				free(((t_env *)head->content)->key);
+				((t_env *)head->content)->key = take_pwd();
+				break ;
+			}
+		head = head->next;
+	}
 }
 
-int cd(char **arg, t_minishell *minishell) //add too many arguments
+void cd(char **arg, t_minishell *mini)
 {
-    t_list  *head;
-
-    if (!*arg || !**arg)
-        chdir("/");
-    else 
-    {
-        if ((chdir(arg[0]) == -1))
-            {
-            perror("cd: ");
-            return (0);
-            }
-    }
-    set_pwd(minishell->env);
-    return (1);
+	check_arg_num(arg);
+	if (!arg[1])
+		chdir("/");
+	else 
+	{
+		if ((chdir(arg[1]) == -1))
+			{
+				perror("cd: ");
+				exit(1);
+			}
+	}
+	set_pwd(mini->env);
+	exit(0);
 }
 
-int main(int argc, char const *argv[], char **envp)
-{
-    // printf("%c", readline("> "));
-    char *str;
 
-    t_minishell minishell;
-    t_list *head;
-    minishell.env = set_env(envp);
+// int main(int argc, char const *argv[], char **envp)
+// {
+// 	// printf("%c", readline("> "));
+// 	char *str;
 
-    head = minishell.env;
-    while (head)
-    {
-        if (!ft_strncmp("PWD", ((t_data *)head->content)->name, 3))
-            {
-                break ;
-            }
-        head = head->next;
-    }
+// 	t_minishell minishell;
+// 	t_list *head;
+// 	minishell.env = set_env(envp);
 
-    while (1)
-    {
-        str = readline("> ");
-        cd(&str, &minishell);
-        printf("%s=%s\n", ((t_data *)head->content)->name, ((t_data *)head->content)->value);
+// 	head = minishell.env;
+// 	while (head)
+// 	{
+// 		if (!ft_strncmp("PWD", ((t_data *)head->content)->name, 3))
+// 			{
+// 				break ;
+// 			}
+// 		head = head->next;
+// 	}
 
-    }
+// 	while (1)
+// 	{
+// 		str = readline("> ");
+// 		cd(&str, &minishell);
+// 		printf("%s=%s\n", ((t_data *)head->content)->name, ((t_data *)head->content)->value);
 
-    return 0;
-}
+// 	}
+
+// 	return 0;
+// }

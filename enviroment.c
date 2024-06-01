@@ -20,24 +20,24 @@ char *tweezers(char *head, char *tail)
     return str;
 }
 
-t_data *set_data(char *env)
+t_env	*set_env(char *env)
 {
-	t_data	*data;
+	t_env	*data;
 	char	*loc;
 
-	data = (t_data *) malloc(sizeof(t_data));
+	data = (t_env *) malloc(sizeof(t_env));
 	if (!data)
 		return (NULL);
 	loc = ft_strchr(env, '=');
 	data->name = ft_strdup(tweezers(env, loc));
 	if (loc)
-		data->value = ft_strdup(loc + 1);
+		data->key = ft_strdup(loc + 1);
 	else
-		data->value = NULL;
+		data->key = NULL;
 	return data;
 }
 
-t_list *set_env(char **envp)
+t_list	*set_env_list(char **envp)
 {
 	t_list	*head;
 	int	i;
@@ -47,7 +47,7 @@ t_list *set_env(char **envp)
 	i = 0;
 	while (envp[i])
 	{
-		ft_lstadd_back(&head, ft_lstnew((void *) set_data(envp[i])));
+		ft_lstadd_back(&head, ft_lstnew((void *) set_env(envp[i])));
 		i++;
 	}
 	return (head);
@@ -65,37 +65,37 @@ t_list *set_env(char **envp)
 // 	return 0;
 // }
 
-t_list *ft_sort_env(t_list *env)
-{
-	t_data *swap;
-	t_list	*tmp;
+// t_list *ft_sort_env(t_list *env)
+// {
+// 	t_env *swap;
+// 	t_list	*tmp;
 
-	tmp = env;
-	while(env->next != NULL)
-	{
-		if (strcmp(((t_data *)env->content)->name, ((t_data *)(env->next->content))->value) > 0)
-		{
-			swap = env->content;
-			env->content = env->next->content;
-			env->next->content = swap;
-			env = tmp;
-		}
-		else
-			env = env->next;
-	}
-	env = tmp;
-	return (env);
-}
+// 	tmp = env;
+// 	while(env->next != NULL)
+// 	{
+// 		if (strcmp(((t_env *)env->content)->name, ((t_env *)(env->next->content))->key) > 0)
+// 		{
+// 			swap = env->content;
+// 			env->content = env->next->content;
+// 			env->next->content = swap;
+// 			env = tmp;
+// 		}
+// 		else
+// 			env = env->next;
+// 	}
+// 	env = tmp;
+// 	return (env);
+// }
 
-t_list *ft_cpylst(t_list *lst)
-{
-	t_list *head;
+// t_list *ft_cpylst(t_list *lst)
+// {
+// 	t_list *head;
 
-	head = NULL;
-	while (lst)
-	{
-		ft_lstadd_back(&head, ft_lstnew(lst->content));
-		lst = lst->next;
-	}
-	return (head);
-}
+// 	head = NULL;
+// 	while (lst)
+// 	{
+// 		ft_lstadd_back(&head, ft_lstnew(lst->content));
+// 		lst = lst->next;
+// 	}
+// 	return (head);
+// }

@@ -2,23 +2,24 @@
 
 char *take_pwd(void)
 {
-    char *buf;
+	char *buf;
 
-    buf = (char *) malloc(260);
-    if (!getcwd(buf, 260))
-    {
-        free(buf);
-        perror("pwd: ");
-        return (NULL);
-    }
-    return (buf);
+	buf = (char *) malloc(260);
+	if (!getcwd(buf, 260))
+	{
+		free(buf);
+		perror("pwd: ");
+		exit (1);
+	}
+	return (buf);
 }
 
 void pwd()
 {
-    char	*path;
+	char	*path;
 
 	path = take_pwd;
 	printf("%s\n", path);
 	free(path);
+	exit(0);
 }

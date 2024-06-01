@@ -8,63 +8,67 @@
 #include <fcntl.h>
 #include <readline/readline.h>
 #include <readline/readline.h>
+//#include <sys/wait.h>
 #include "./libft/libft.h"
 
-void    pwd(void);
-//int cd(char **arg, t_minishell *minishell);
-int echo(char **arg);
-int env(t_list *env);
-//void built_in_exit(t_minishell *minishell);
-//void ft_unset(char **arg, t_minishell *minishell);
-
-
-
-typedef struct s_data
+typedef struct s_minishell
 {
-    char *name;
-    char *value;
-} t_data;
+	t_list	*token_list;
+	t_list	*env_list;
+	t_list  *doc_list;
+	t_list  *main_list;
+	char	**env_arr;
+	int		in_file;
+	int		out_file;
+	int		num_pipe;
+	int		pipe[2];
+	int		status;
+}	t_minishell;
+
+char	*take_pwd(void);
+void	pwd(void);
+void	cd(char **arg, t_minishell *mini);
+void	echo(char **arg, int lock1, int lock2);
+void	env(t_list *env);
+void	del_env(void *content);
+void	free_darr(char **arr);
+void	built_in_exit(t_minishell *mini);
+void	export(char **arg, t_minishell *mini);
+//void unset(char **arg, t_minishell *minishell);
 
 
-t_list *ft_sort_env(t_list *env);
-t_list *set_env(char **env);
+
+typedef struct s_env
+{
+	char	*name;
+	char	*key;
+}	t_env;
+
+
+t_list	*ft_sort_env(t_list *env);
+t_env	*set_env(char *env);
+t_list	*set_env_list(char **envp);
 
 
 
 
 #define OPEN_W_TR O_WRONLY | O_TRUNC | O_CREAT
 #define OPEN_W_AP O_WRONLY | O_APPEND | O_CREAT
-typedef struct s_minishell
+
+typedef struct s_command
 {
-    t_list *env;
-    t_list *infile_list;
-    t_list *outfile_list;
-    t_list *param_list;
-    t_list  *doc_list;
-    t_list  *current_doc;
-    char *cmd;
-    char **env_arr;
-    char **param_arr;
-    int in_file;
-    int out_file;
-    int num_infile;
-    int num_outfile;
-    int num_pipe;
-    int pipe[2];
-    int status;
-    
-} t_minishell;
-
-
-
+	char    **arg;
+	t_list  *infile_list;
+	t_list  *outfile_list;
+}   t_command;
 
 typedef struct s_token
 {
-    char *value;
-    int term;
-} t_token;
+	char	*value;
+	int		term;
+}	t_token;
 
-char *tweezers(char *head, char *tail);
+char	*tweezers(char *head, char *tail);
 
 #define LESS 1
 #define GREAT 2
@@ -77,6 +81,6 @@ char *tweezers(char *head, char *tail);
 #define ARG 9
 
 
-char *find_cmd_path(char *cmd, char **envp);
+char	*find_cmd_path(char *cmd, char **envp);
 
 #endif

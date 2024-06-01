@@ -1,16 +1,14 @@
 #include "minishell.h"
 
-int env(t_list *env)
+void	env(t_list *env)
 {
-    int i;
-
-    if (!env)
-        return (0);
-    i = 0;
-    while (env)
-    {
-        printf("%s=%s\n", ((t_data *)env->content)->name,((t_data *)env->content)->value);
-        env = env->next;
-    }
-    return (1);
+	if (!env)
+		exit(125);
+	while (env)
+	{
+		if (!(((t_env *)env->content)->key))
+			printf("%s=%s\n", ((t_env *)env->content)->name,((t_env *)env->content)->key);
+		env = env->next;
+	}
+	exit(0);
 }

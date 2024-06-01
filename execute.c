@@ -1,181 +1,179 @@
 #include "minishell.h"
 
-// infile and outfile list
-
-void	exec_ve(t_minishell *minishell)
+void	exec_ve(t_minishell *mini, t_command *command) 
 {
-	char	*cmd;
 	char	*path;
 
-	cmd = minishell->cmd;
-	if (cmd == '/' ||  cmd == '.')
-		execve(cmd, minishell->param_arr, minishell->env_arr);
+	if (command->arg[0][0] == '/' ||  command->arg[0][0] == '.')
+		execve(command->arg[0], command->arg, mini->env_arr);
 	else
 	{
-		path = find_cmd_path(cmd, minishell->env_arr);
+		path = find_cmd_path(command->arg[0], mini->env_arr);
 		if (!path)
 			return ;
-		free(minishell->param_arr[0]);
-		minishell->param_arr[0] = path;
-		execve(path, minishell->param_arr, minishell->env_arr);
+		free(command->arg[0]);
+		command->arg[0] = path;
+		execve(command->arg[0], command->arg, mini->env_arr);
 	}
-    perror("CMD: ");
+	perror("CMD: ");
 }
 
-int set_infile(t_minishell *minishell)
+void    execute_l(t_minishell *mini, t_command *command)
 {
-    t_list *head;
-    int fd;
-
-    head = minishell->infile_list;
-    while (head)
-    {
-        fd = open(head->content, O_RDONLY); // düzelt
-        if (fd == -1)
-        {
-            perror("INFILE: ");
-            return (NULL);
-        }
-        dup2(fd, minishell->in_file);
-        if (!head->next)
-            close(fd);
-        head = head->next;
-    }
+	if (ft_strncmp(command->arg[0], "cd", 3))
+		cd(command->arg, mini);
+	else if (ft_strncmp(command->arg[0], "pwd", 4))
+		pwd();
+	else if (ft_strncmp(command->arg[0], "echo", 5))
+		echo(command->arg, 0, 0);
+	else if (ft_strncmp(command->arg[0], "env", 4))
+		env(mini->env_list);
+	else if (ft_strncmp(command->arg[0], "exit", 5))
+		built_in_exit(mini);
+	else if (ft_strncmp(command->arg[0], "unset", 6))
+		unset(command->arg, mini); //not done
+	else if (ft_strncmp(command->arg[0], "export", 7))
+		export(command->arg, mini); 
+	else
+		exec_ve(mini, command);
 }
 
-int set_outfile(t_minishell *minishell)
+void	set_infile(t_minishell *mini, t_command *command)
 {
-    t_list *head;
-    int fd;
+	t_list *head;
+	int fd;
 
-    head = minishell->outfile_list;
-    while (head)
-    {
-        if (head->content == DGREAT)
-            fd = open(head->content, OPEN_W_AP, 0664); // düzelt
-        else
-            fd = open(head->content, OPEN_W_TR, 0664); 
-        if (fd == -1)
-        {
-            perror("OUTFILE: ");
-            return (NULL);
-        }
-        dup2(fd, minishell->out_file);
-        if (!head->next)
-            close(fd);
-        head = head->next;
-    }
+	head = command->infile_list;
+	while (head)
+	{
+		fd = open(((t_token *)head->content)->value, O_RDONLY); // düzelt
+		if (fd == -1)
+		{
+			perror("INFILE: ");
+			exit (1);
+		}
+		dup2(fd, mini->in_file);
+		if (head->next)
+			close(fd);
+		head = head->next;
+	}
 }
 
-int head_executiion(t_minishell *minishell)
+int	set_outfile(t_minishell *mini, t_command *command)
 {
-    int i;
-    int fd;
-    t_list *token;
-    char *cmd;
+	t_list *head;
+	int fd;
 
-    if (!set_infile(minishell))
-        return (NULL);
-    dup2(minishell->pipe[1], minishell->out_file);
-    if (!set_outfile(minishell))
-        return (NULL);
-    execute(minishell);
-    return (NULL);
+	head = command->outfile_list;
+	while (head)
+	{
+		if (((t_token *)head->content)->term == DGREAT)
+			fd = open(head->content, OPEN_W_AP, 0664); // düzelt
+		else
+			fd = open(head->content, OPEN_W_TR, 0664); 
+		if (fd == -1)
+		{
+			perror("OUTFILE: ");
+			exit(1);
+		}
+		dup2(fd, mini->out_file);
+		if (head->next)
+			close(fd);
+		head = head->next;
+	}
 }
 
-int mid_executiion(t_minishell *minishell)
+void	head_execution(t_minishell *mini, t_command *command)
 {
-    int i;
-    int fd;
-    t_list *token;
-    char *cmd;
-
-    dup2(minishell->pipe[0], minishell->in_file);
-    if (!set_infile(minishell))
-        return (NULL);
-    dup2(minishell->pipe[1], minishell->out_file);
-    if (!set_outfile(minishell))
-        return (NULL);
-    execute(minishell);
-    return (NULL);
+	set_infile(mini, command);
+	dup2(mini->pipe[1], mini->out_file);
+	set_outfile(mini, command);
+	execute_l(mini, command);
+	exit(127);
 }
 
-
-
-void    execute(t_minishell *minishell)
+void	mid_execution(t_minishell *mini, t_command *command)
 {
-    char    *cmd;
-
-    cmd = minishell->cmd;
-    if (ft_strncmp(cmd, "cd", 3))
-        cd(&(minishell->param_arr[1]), minishell);
-    else if (ft_strncmp(cmd, "pwd", 4))
-        pwd();
-    else if (ft_strncmp(cmd, "echo", 5))
-        echo(&(minishell->param_arr[1]));
-    else if (ft_strncmp(cmd, "env", 4))
-        env(minishell->env);
-    else if (ft_strncmp(cmd, "exit", 5))
-        built_in_exit(minishell);
-    else if (ft_strncmp(cmd, "unset", 6))
-        unset(&(minishell->param_arr[1]), minishell);
-    else if (ft_strncmp(cmd, "export", 7))
-        export(); //bitmedi bu
-    else
-        exec_ve(minishell);
+	dup2(mini->pipe[0], mini->in_file);
+	set_infile(mini, command);
+	dup2(mini->pipe[1], mini->out_file);
+	set_outfile(mini, command);
+	execute_l(mini, command);
+	exit(127);
 }
 
-int mid_executiion(t_minishell *minishell)
+void	tail_execution(t_minishell *mini, t_command *command)
 {
-    int i;
-    int fd;
-    t_list *token;
-    char *cmd;
-
-    dup2(minishell->pipe[0], minishell->in_file);
-    if (!set_infile(minishell))
-        return (NULL);
-    if (!set_outfile(minishell))
-        return (NULL);
-    execute(minishell);
-    return (NULL);
+	dup2(mini->pipe[0], mini->in_file);
+	set_infile(mini, command);
+	set_outfile(mini, command);
+	execute_l(mini, command);
+	exit(127);
 }
 
-int execute(t_minishell *minishell)
+void	execute(t_minishell *mini)
 {
-    int i;
-    int pid;
-    int status;
+	t_list	*head;
+	int		pid;
+	int		i;
+	int		status;
 
-    if (!pipe(minishell->pipe))
-    {
-        perror("pipe: ");
-        return (NULL);
-    }
-    i = minishell->num_pipe;
-    while (i > -1)
-    {
-        pid = fork();
-        if (pid == 0)
-        {
-            if (minishell->num_pipe == i)
-                if (!head_execution())
-                    return (NULL);
-            else if (i == 0)
-                if (!tail_execution())
-                    return (NULL);  
-            else
-                if (!mid_execution())
-                    return (NULL);
-        }
-        else
-        {
-            wait(&status);
-            minishell->status = status;
-        }
-        i--;
-    }
-    close(minishell->pipe[0]);
-    close(minishell->pipe[1]);
-    return (1);
+	head = mini->main_list;
+	i = mini->num_pipe;
+	while (i > -1)
+	{
+		pid = fork();
+		if (pid == 0)
+		{
+			if (mini->num_pipe == i)
+				head_execution(mini, ((t_command *)head->content));
+			else if (i == 0)
+				tail_execution(mini, ((t_command *)head->content));
+			else
+				mid_execution(mini, ((t_command *)head->content));
+		}
+		wait(&status);
+		mini->status = WEXITSTATUS(status);
+		head = head->next;
+		i--;
+	}
 }
+
+// int execute(t_minishell *minishell)
+// {
+//     int i;
+//     int pid;
+//     int status;
+
+//     if (!pipe(minishell->pipe))
+//     {
+//         perror("pipe: ");
+//         return (NULL);
+//     }
+//     i = minishell->num_pipe;
+//     while (i > -1)
+//     {
+//         pid = fork();
+//         if (pid == 0)
+//         {
+//             if (minishell->num_pipe == i)
+//                 if (!head_execution())
+//                     return (NULL);
+//             else if (i == 0)
+//                 if (!tail_execution())
+//                     return (NULL);  
+//             else
+//                 if (!mid_execution())
+//                     return (NULL);
+//         }
+//         else
+//         {
+//             wait(&status);
+//             minishell->status = status;
+//         }
+//         i--;
+//     }
+//     close(minishell->pipe[0]);
+//     close(minishell->pipe[1]);
+//     return (1);
+// }
