@@ -7,7 +7,7 @@
 #include <string.h>
 #include <fcntl.h>
 #include <readline/readline.h>
-#include <readline/readline.h>
+#include <readline/history.h>
 //#include <sys/wait.h>
 #include "./libft/libft.h"
 
@@ -34,7 +34,7 @@ void	del_env(void *content);
 void	free_darr(char **arr);
 void	built_in_exit(t_minishell *mini);
 void	export(char **arg, t_minishell *mini);
-//void unset(char **arg, t_minishell *minishell);
+void	unset(char **arg, t_minishell *mini);
 
 
 
@@ -79,7 +79,8 @@ char	*tweezers(char *head, char *tail);
 #define PIPE 7
 #define CMD 8
 #define ARG 9
-
+#define SNG_PARAM 10
+#define NRM_PARAM 11
 
 char	*find_cmd_path(char *cmd, char **envp);
 

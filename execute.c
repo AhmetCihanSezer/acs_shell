@@ -31,7 +31,7 @@ void    execute_l(t_minishell *mini, t_command *command)
 	else if (ft_strncmp(command->arg[0], "exit", 5))
 		built_in_exit(mini);
 	else if (ft_strncmp(command->arg[0], "unset", 6))
-		unset(command->arg, mini); //not done
+		unset(command->arg, mini);
 	else if (ft_strncmp(command->arg[0], "export", 7))
 		export(command->arg, mini); 
 	else
@@ -59,7 +59,7 @@ void	set_infile(t_minishell *mini, t_command *command)
 	}
 }
 
-int	set_outfile(t_minishell *mini, t_command *command)
+void	set_outfile(t_minishell *mini, t_command *command)
 {
 	t_list *head;
 	int fd;
