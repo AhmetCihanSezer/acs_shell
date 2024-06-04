@@ -84,4 +84,8 @@ char	*tweezers(char *head, char *tail);
 
 char	*find_cmd_path(char *cmd, char **envp);
 
+int 	in_charset(char c, char *set);
+char	*find_name(t_list *env, char *str);
+int		len_list(t_list *list);
+
 #endif
