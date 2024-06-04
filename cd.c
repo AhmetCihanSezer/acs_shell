@@ -10,6 +10,7 @@ static void	check_arg_num(char **arg)
 	if (i > 2)
 	{
 		write(2, "cd: too many arguments\n", 24);
+		return ;
 		exit (1);
 	}
 }
@@ -18,7 +19,7 @@ static void set_pwd(t_list *head)
 {
 	while (head)
 	{
-		if (!ft_strncmp("PWD", ((t_env *)head->content)->name, 3))
+		if (!ft_strncmp("PWD", ((t_env *)head->content)->name, 4))
 			{
 				free(((t_env *)head->content)->key);
 				((t_env *)head->content)->key = take_pwd();
@@ -35,13 +36,16 @@ void cd(char **arg, t_minishell *mini)
 		chdir("/");
 	else 
 	{
-		if ((chdir(arg[1]) == -1))
-			{
-				perror("cd: ");
-				exit(1);
-			}
+		if ((chdir(arg[1])))
+		{
+		//write(1, arg[0], ft_strlen(arg[0]));
+			perror("cd: ");
+			return ;
+			exit(1);
+		}
 	}
-	set_pwd(mini->env);
+	set_pwd(mini->env_list);
+	return ;
 	exit(0);
 }
 

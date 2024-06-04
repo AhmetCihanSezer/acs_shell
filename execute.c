@@ -20,19 +20,19 @@ void	exec_ve(t_minishell *mini, t_command *command)
 
 void    execute_l(t_minishell *mini, t_command *command)
 {
-	if (ft_strncmp(command->arg[0], "cd", 3))
+	if (!ft_strncmp(command->arg[0], "cd", 3))
 		cd(command->arg, mini);
-	else if (ft_strncmp(command->arg[0], "pwd", 4))
+	else if (!ft_strncmp(command->arg[0], "pwd", 4))
 		pwd();
-	else if (ft_strncmp(command->arg[0], "echo", 5))
+	else if (!ft_strncmp(command->arg[0], "echo", 5))
 		echo(command->arg, 0, 0);
-	else if (ft_strncmp(command->arg[0], "env", 4))
+	else if (!ft_strncmp(command->arg[0], "env", 4))
 		env(mini->env_list);
-	else if (ft_strncmp(command->arg[0], "exit", 5))
+	else if (!ft_strncmp(command->arg[0], "exit", 5))
 		built_in_exit(mini);
-	else if (ft_strncmp(command->arg[0], "unset", 6))
+	else if (!ft_strncmp(command->arg[0], "unset", 6))
 		unset(command->arg, mini);
-	else if (ft_strncmp(command->arg[0], "export", 7))
+	else if (!ft_strncmp(command->arg[0], "export", 7))
 		export(command->arg, mini); 
 	else
 		exec_ve(mini, command);
