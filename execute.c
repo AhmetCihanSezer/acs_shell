@@ -18,7 +18,6 @@ void	exec_ve(t_minishell *mini, t_command *command)
 	perror("CMD: ");
 }
 
-
 void    execute_l(t_minishell *mini, t_command *command)
 {
 	int	pid;
