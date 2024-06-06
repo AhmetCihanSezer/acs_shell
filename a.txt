@@ -1,0 +1,3 @@
+A_TXT
+isim = Ahmet Cihan Sezer
+A_TXT end

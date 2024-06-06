@@ -1,0 +1,3 @@
+B_TXT
+bolum = Kontrol ve Otomasyon Muhendisligi | Ucak Muhendisligi
+B_TXT end

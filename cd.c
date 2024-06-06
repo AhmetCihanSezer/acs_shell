@@ -31,9 +31,15 @@ static void set_pwd(t_list *head)
 
 void cd(char **arg, t_minishell *mini)
 {
+	char	*home;
 	check_arg_num(arg);
 	if (!arg[1])
-		chdir("/");
+	{
+		home = find_name(mini->env_list, "HOME");
+		chdir(home);
+		perror("cd: ");
+		free(home);
+	}
 	else 
 	{
 		if ((chdir(arg[1])))

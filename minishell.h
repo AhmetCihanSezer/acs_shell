@@ -83,6 +83,7 @@ char	*tweezers(char *head, char *tail);
 #define NRM_PARAM 11
 
 char	*find_cmd_path(char *cmd, char **envp);
+char	*find_value(char **envp, char *name);
 
 int 	in_charset(char c, char *set);
 char	*find_name(t_list *env, char *str);

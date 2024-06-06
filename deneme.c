@@ -20,17 +20,9 @@ int main(int argc, char const *argv[], char **envp)
         add_history(str);
         cmd.arg = ft_split(str, ' ');
         //cmd.arg[0] = find_cmd_path(cmd.arg[0], mini.env_arr);
-        int pid = fork();
-        if (pid == 0)
-        {
             mini.env_arr = env_list_to_arr(mini.env_list);
             execute_l(&mini, &cmd);
-            perror("Execve: ");
-        }
-        else
-        {
-            wait(&status);
-        }
+            //perror("Execve: ");
     }
 
     return 0;
