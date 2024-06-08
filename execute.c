@@ -19,6 +19,8 @@ void	exec_ve(t_minishell *mini, t_command *command)
 }
 
 
+
+//  set status
 void    execute_l(t_minishell *mini, t_command *command)
 {
 	int	pid;
@@ -50,6 +52,8 @@ void    execute_l(t_minishell *mini, t_command *command)
 	}
 }
 
+// exit yerine return yap
+
 void	set_infile(t_minishell *mini, t_command *command)
 {
 	t_list *head;
@@ -74,7 +78,9 @@ void	set_infile(t_minishell *mini, t_command *command)
 	}
 }
 
-int	set_outfile(t_minishell *mini, t_command *command)
+// exit yerine return yap
+
+void	set_outfile(t_minishell *mini, t_command *command)
 {
 	t_list *head;
 	int fd;
@@ -94,7 +100,7 @@ int	set_outfile(t_minishell *mini, t_command *command)
 		if  (!head->next)
 		{
 			dup2(fd, 1);
-			return (0);
+			return ;
 		}
 		close(fd);
 		head = head->next;
@@ -104,10 +110,10 @@ int	set_outfile(t_minishell *mini, t_command *command)
 void	head_execution(t_minishell *mini, t_command *command)
 {
 	set_infile(mini, command);
-	dup2(mini->pipe[1], mini->out_file);
+	if (mini->num_pipe != 0)
+		dup2(mini->pipe[1], mini->out_file);
 	set_outfile(mini, command);
 	execute_l(mini, command);
-	exit(127);
 }
 
 void	mid_execution(t_minishell *mini, t_command *command)
@@ -117,7 +123,6 @@ void	mid_execution(t_minishell *mini, t_command *command)
 	dup2(mini->pipe[1], mini->out_file);
 	set_outfile(mini, command);
 	execute_l(mini, command);
-	exit(127);
 }
 
 void	tail_execution(t_minishell *mini, t_command *command)
@@ -126,15 +131,12 @@ void	tail_execution(t_minishell *mini, t_command *command)
 	set_infile(mini, command);
 	set_outfile(mini, command);
 	execute_l(mini, command);
-	exit(127);
 }
 
 void	execute(t_minishell *mini)
 {
 	t_list	*head;
-	int		pid;
 	int		i;
-	int		status;
 
 	head = mini->main_list;
 	i = mini->num_pipe;
@@ -146,8 +148,6 @@ void	execute(t_minishell *mini)
 			tail_execution(mini, ((t_command *)head->content));
 		else
 			mid_execution(mini, ((t_command *)head->content));
-		wait(&status);
-		mini->status = WEXITSTATUS(status);
 		head = head->next;
 		i--;
 	}
