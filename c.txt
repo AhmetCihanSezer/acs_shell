@@ -1,0 +1,3 @@
+C_TXT
+hobi = kod yazmak, uyumak, Diyar ile vakit gecirmek
+C_TXT end

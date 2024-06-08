@@ -35,6 +35,7 @@ void	del_command(void	*content)
 
 void	built_in_exit(t_minishell *mini)
 {
+	write(1,"a\n", 2);
 	ft_lstclear(&(mini->token_list), del_token);
     ft_lstclear(&(mini->env_list), del_env);
 	ft_lstclear(&(mini->doc_list), del_token);

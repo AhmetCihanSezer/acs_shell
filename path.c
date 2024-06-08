@@ -10,7 +10,7 @@ static int	strlen_s(char *str, char c)
 	return (i);
 }
 
-static char	*find_value(char **envp, char *name)
+char	*find_value(char **envp, char *name)
 {   int	i;
 
 	i = 0;
@@ -39,7 +39,7 @@ char	*find_cmd_path(char *cmd, char **envp)
 		temp1 = ft_strjoin("/", cmd);
 		temp2 = ft_strjoin(cmd_arr[i], temp1);
 		free(temp1);
-		if (!access(temp2, X_OK))
+		if (!access(temp2, F_OK | X_OK))
 		{
 			free_darr(cmd_arr);
 			return (temp2);

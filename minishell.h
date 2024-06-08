@@ -8,7 +8,7 @@
 #include <fcntl.h>
 #include <readline/readline.h>
 #include <readline/history.h>
-//#include <sys/wait.h>
+#include <sys/wait.h>
 #include "./libft/libft.h"
 
 typedef struct s_minishell
@@ -83,9 +83,14 @@ char	*tweezers(char *head, char *tail);
 #define NRM_PARAM 11
 
 char	*find_cmd_path(char *cmd, char **envp);
+char	*find_value(char **envp, char *name);
 
 int 	in_charset(char c, char *set);
 char	*find_name(t_list *env, char *str);
 int		len_list(t_list *list);
+
+void	exec_ve(t_minishell *mini, t_command *command) ;
+void    execute_l(t_minishell *mini, t_command *command);
+char	**env_list_to_arr(t_list *env_list);
 
 #endif

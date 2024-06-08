@@ -1,8 +1,5 @@
 #include "minishell.h"
 
-
-//  gcc deneme.c execute.c path.c exit.c cd.c pwd.c echo.c env.c unset.c export.c enviroment.c set_env_arr.c ./libft/libft.a -lreadline
-
 int main(int argc, char const *argv[], char **envp)
 {
     char *str;
@@ -20,11 +17,17 @@ int main(int argc, char const *argv[], char **envp)
         add_history(str);
         cmd.arg = ft_split(str, ' ');
         //cmd.arg[0] = find_cmd_path(cmd.arg[0], mini.env_arr);
+        int pid = 0;//fork();
+        if (pid == 0)
+        {
             mini.env_arr = env_list_to_arr(mini.env_list);
-            execute_l(&mini, &cmd);
+            cd(cmd.arg, &mini);
             //perror("Execve: ");
+        }
+        else
+        {
+            wait(&status);
+        }
     }
-
     return 0;
 }
-

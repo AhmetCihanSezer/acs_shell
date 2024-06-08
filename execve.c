@@ -31,6 +31,5 @@ int main(int argc, char const *argv[], char **env)
     t_command *cmd = malloc(sizeof(t_command));
     char *arg1[] = {"cat"};
     cmd->arg = arg1;
-    cmd->infile_list = ft_lstadd_back()
-    printf("%s\n", arg[0]);
+    printf("%s\n", argv[0]);
 }
